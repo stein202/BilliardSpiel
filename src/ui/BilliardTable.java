@@ -49,7 +49,7 @@ public class BilliardTable extends JPanel {
         float pocketBottomY = height - (pocketY + pocketRadius * 2);
         int pocketX = outerMargin + outlineSize - 5;
         float pocketRightX = width - (pocketX + pocketRadius * 2);
-        float pocketCenterX = this.getWidth() / 2f - pocketRadius;
+        int pocketCenterX = this.getWidth() / 2 - pocketRadius;
 
         // Holzrahmen
         g2d.setColor(woodColor1);
@@ -91,6 +91,27 @@ public class BilliardTable extends JPanel {
         cushion.add(new Area(bottom));
 
         Polygon topMidCut = new Polygon();
+
+        int xAchse = pocketCenterX + pocketRadius;
+        int yAchse = pocketY + pocketRadius;
+
+        int x1 = xAchse;
+        int y1 = yAchse - pocketRadius;
+        int x2 = xAchse - pocketRadius;
+        int y2 = yAchse;
+        int x3 = xAchse + pocketRadius;
+        int y3 = yAchse;
+
+        int sx1 = x1 + 5*(x2-x1);
+        int sx2= x1 + 5*(x3-x1);
+        int sy1 = y2 + 5*(y2-y1);
+        int sy2= y2 + 5*(y3-y1);
+
+        topMidCut.addPoint(x1, y1);
+        topMidCut.addPoint(sx1, sy1);
+        topMidCut.addPoint(sx2, sy2);
+
+        cushion.subtract(new Area(topMidCut));
 
         g2d.setColor(cushionColor);
         g2d.fill(cushion);
