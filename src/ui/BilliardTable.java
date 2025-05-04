@@ -46,10 +46,10 @@ public class BilliardTable extends JPanel {
         float radius = Math.max(tableWidth, tableHeight) / 2f;
 
         int pocketY = outerMargin + outlineSize - 5;
-        float pocketBottomY = height - (pocketY + pocketRadius * 2);
+        int pocketBottomY = height - (pocketY + pocketRadius * 2);
         int pocketX = outerMargin + outlineSize - 5;
-        float pocketRightX = width - (pocketX + pocketRadius * 2);
-        float pocketCenterX = this.getWidth() / 2f - pocketRadius;
+        int pocketRightX = width - (pocketX + pocketRadius * 2);
+        int pocketCenterX = this.getWidth() / 2 - pocketRadius;
 
         // Holzrahmen
         g2d.setColor(woodColor1);
@@ -91,6 +91,50 @@ public class BilliardTable extends JPanel {
         cushion.add(new Area(bottom));
 
         Polygon topMidCut = new Polygon();
+
+        int xAchse = pocketCenterX + pocketRadius;
+        int yAchse = pocketY + pocketRadius;
+
+        int x1 = xAchse;
+        int y1 = yAchse - pocketRadius;
+        int x2 = xAchse - pocketRadius;
+        int y2 = yAchse;
+        int x3 = xAchse + pocketRadius;
+        int y3 = yAchse;
+
+        int sx1 = x1 + 5*(x2-x1);
+        int sx2= x1 + 5*(x3-x1);
+        int sy1 = y2 + 5*(y2-y1);
+        int sy2= y2 + 5*(y3-y1);
+
+        topMidCut.addPoint(x1, y1);
+        topMidCut.addPoint(sx1, sy1);
+        topMidCut.addPoint(sx2, sy2);
+
+        cushion.subtract(new Area(topMidCut));
+
+        Polygon bottomMidCut = new Polygon();
+
+        xAchse = pocketCenterX + pocketRadius;
+        yAchse = pocketBottomY + pocketRadius;
+
+        x1 = xAchse;
+        y1 = yAchse + pocketRadius;
+        x2 = xAchse - pocketRadius;
+        y2 = yAchse;
+        x3 = xAchse + pocketRadius;
+        y3 = yAchse;
+
+        sx1 = x1 + 5*(x2-x1);
+        sx2= x1 + 5*(x3-x1);
+        sy1 = y2 + 5*(y2-y1);
+        sy2= y2 + 5*(y3-y1);
+
+        bottomMidCut.addPoint(x1, y1);
+        bottomMidCut.addPoint(sx1, sy1);
+        bottomMidCut.addPoint(sx2, sy2);
+
+        cushion.subtract(new Area(bottomMidCut));
 
         g2d.setColor(cushionColor);
         g2d.fill(cushion);
