@@ -90,17 +90,18 @@ public class BilliardTable extends JPanel {
         cushion.add(new Area(right));
         cushion.add(new Area(bottom));
 
+        //Dreiek für oben in der Mitte
         Polygon topMidCut = new Polygon();
 
-        int xAchse = pocketCenterX + pocketRadius;
-        int yAchse = pocketY + pocketRadius;
+        int x = pocketCenterX + pocketRadius;
+        int y = pocketY + pocketRadius;
 
-        int x1 = xAchse;
-        int y1 = yAchse - pocketRadius;
-        int x2 = xAchse - pocketRadius;
-        int y2 = yAchse;
-        int x3 = xAchse + pocketRadius;
-        int y3 = yAchse;
+        int x1 = x;
+        int y1 = y - pocketRadius;
+        int x2 = x - pocketRadius;
+        int y2 = y;
+        int x3 = x + pocketRadius;
+        int y3 = y;
 
         int sx1 = x1 + 5*(x2-x1);
         int sx2= x1 + 5*(x3-x1);
@@ -113,17 +114,18 @@ public class BilliardTable extends JPanel {
 
         cushion.subtract(new Area(topMidCut));
 
+        //Dreieck für die Mitte unten
         Polygon bottomMidCut = new Polygon();
 
-        xAchse = pocketCenterX + pocketRadius;
-        yAchse = pocketBottomY + pocketRadius;
+        x = pocketCenterX + pocketRadius;
+        y = pocketBottomY + pocketRadius;
 
-        x1 = xAchse;
-        y1 = yAchse + pocketRadius;
-        x2 = xAchse - pocketRadius;
-        y2 = yAchse;
-        x3 = xAchse + pocketRadius;
-        y3 = yAchse;
+        x1 = x;
+        y1 = y + pocketRadius;
+        x2 = x - pocketRadius;
+        y2 = y;
+        x3 = x + pocketRadius;
+        y3 = y;
 
         sx1 = x1 + 5*(x2-x1);
         sx2= x1 + 5*(x3-x1);
@@ -135,6 +137,114 @@ public class BilliardTable extends JPanel {
         bottomMidCut.addPoint(sx2, sy2);
 
         cushion.subtract(new Area(bottomMidCut));
+
+        //Rechteck für die obere linke Ecke
+        Polygon topLeftCut = new Polygon();
+
+        x = pocketX + pocketRadius;
+        y = pocketY + pocketRadius;
+
+        x1 = x;
+        y1 = y - pocketRadius;
+        x2 = x - pocketRadius;
+        y2 = y;
+        x3 = x + pocketRadius;
+        y3 = y;
+        int x4 = x;
+        int y4 = y + pocketRadius;
+
+        sx1 = x2 + 5*(x4-x2);
+        sy1 = y2 + 5*(y4-y2);
+        sx2= x1 + 5*(x3-x1);
+        sy2= y1 + 5*(y3-y1);
+
+        topLeftCut.addPoint(x1, y1);
+        topLeftCut.addPoint(x2, y2);
+        topLeftCut.addPoint(sx1, sy1);
+        topLeftCut.addPoint(sx2, sy2);
+
+        cushion.subtract(new Area(topLeftCut));
+
+        //Rechteck oben rechte Ecke
+        Polygon topRightCut = new Polygon();
+
+        x = pocketRightX + pocketRadius;
+        y = pocketY + pocketRadius;
+
+        x1 = x;
+        y1 = y - pocketRadius;
+        x2 = x - pocketRadius;
+        y2 = y;
+        x3 = x + pocketRadius;
+        y3 = y;
+        x4 = x;
+        y4 = y + pocketRadius;
+
+        sx1 = x1 + 5*(x2-x1);
+        sy1 = y1 + 5*(y2-y1);
+        sx2= x3 + 5*(x4-x3);
+        sy2= y3 + 5*(y4-y3);
+
+        topRightCut.addPoint(x1, y1);
+        topRightCut.addPoint(sx1, sy1);
+        topRightCut.addPoint(sx2, sy2);
+        topRightCut.addPoint(x3, y3);
+
+        cushion.subtract(new Area(topRightCut));
+
+        //Rechteck unten linke Ecke
+        Polygon bottomLeftCut = new Polygon();
+
+        x = pocketX + pocketRadius;
+        y = pocketBottomY + pocketRadius;
+
+        x1 = x;
+        y1 = y - pocketRadius;
+        x2 = x - pocketRadius;
+        y2 = y;
+        x3 = x + pocketRadius;
+        y3 = y;
+        x4 = x;
+        y4 = y + pocketRadius;
+
+        sx1 = x2 + 5*(x1-x2);
+        sy1 = y2 + 5*(y1-y2);
+        sx2= x4 + 5*(x3-x4);
+        sy2= y4 + 5*(y3-y4);
+
+        bottomLeftCut.addPoint(sx1, sy1);
+        bottomLeftCut.addPoint(x2, y2);
+        bottomLeftCut.addPoint(x4, y4);
+        bottomLeftCut.addPoint(sx2, sy2);
+
+        cushion.subtract(new Area(bottomLeftCut));
+
+        //Rechteck für die untere rechte Ecke
+        Polygon bottomRightCut = new Polygon();
+
+        x = pocketRightX + pocketRadius;
+        y = pocketBottomY + pocketRadius;
+
+        x1 = x;
+        y1 = y - pocketRadius;
+        x2 = x - pocketRadius;
+        y2 = y;
+        x3 = x + pocketRadius;
+        y3 = y;
+        x4 = x;
+        y4 = y + pocketRadius;
+
+        sx1 = x3 + 5*(x1-x3);
+        sy1 = y3 + 5*(y1-y3);
+        sx2= x4 + 5*(x2-x4);
+        sy2= y4 + 5*(y2-y4);
+
+        bottomRightCut.addPoint(sx1, sy1);
+        bottomRightCut.addPoint(sx2, sy2);
+        bottomRightCut.addPoint(x4, y4);
+        bottomRightCut.addPoint(x3, y3);
+
+        cushion.subtract(new Area(bottomRightCut));
 
         g2d.setColor(cushionColor);
         g2d.fill(cushion);
@@ -195,6 +305,7 @@ public class BilliardTable extends JPanel {
         g.setPaint(oldPaint);
     }
 
+    //Zeichnung des Holzrahmens
     private void drawWoodRim(Graphics2D g, float x, float y, float width, float height, String pos) {
         float startX = x;
         float startY = y;
