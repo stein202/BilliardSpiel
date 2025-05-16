@@ -1,10 +1,4 @@
-package ui;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.*;
-
-public class BilliardTable extends JPanel {
+{
     private final int width = 1400;
     private final int height = 700;
     private final int pocketRadius = 30;
@@ -15,6 +9,8 @@ public class BilliardTable extends JPanel {
     private final Color woodColor1 = new Color(175, 115, 70);
     private final Color woodColor2 = new Color(140, 85, 50);
     private final Color woodColor3 = new Color(100, 60, 35);
+
+    public ArrayList<BilliardBall> balls = new ArrayList<>();
 
     public BilliardTable() {
         setPreferredSize(new Dimension(width, height));
@@ -267,6 +263,7 @@ public class BilliardTable extends JPanel {
         drawPocket(g2d, pocketRightX, pocketBottomY); // unten rechts
         drawPocket(g2d, pocketCenterX, pocketY - 5); // oben mitte
         drawPocket(g2d, pocketCenterX, pocketBottomY + 5); // unten mitte
+        renderBall(g2d, ((double) (pocketCenterX + pocketRightX) /2), (double) (pocketBottomY/2) + 25);
     }
 
     private void drawPocket(Graphics2D g, float x, float y) {
@@ -349,4 +346,28 @@ public class BilliardTable extends JPanel {
         g.setPaint(woodGradient);
         g.fill(new RoundRectangle2D.Float(x, y, width, height, 50, 50));
     }
+
+    private void renderBall(Graphics2D g2d, double centerX, double centerY){
+        createBallTriangle(centerX, centerY, 5, BilliardBall.width);
+
+        for(BilliardBall ball : balls) {
+            ball.drawBall(g2d);
+        }
+    }
+
+    public void createBallTriangle(double startX, double startY, int numRows, double ballDiameter) {
+        double h = ballDiameter * Math.sqrt(3) / 2;
+
+        int ballId = 0;
+        for (int row = 0; row < numRows; row++) {
+            double x = startX + row * h;
+            double yStart = startY - row * ballDiameter / 2;
+
+            for (int col = 0; col <= row; col++) {
+                double y = yStart + col * ballDiameter;
+                balls.add(new BilliardBall(ballId++, x, y));
+            }
+        }
+    }
+
 }
