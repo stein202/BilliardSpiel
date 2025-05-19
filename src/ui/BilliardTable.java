@@ -1,4 +1,14 @@
-{
+package ui;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
+
+public class BilliardTable extends JPanel {
     private final int width = 1400;
     private final int height = 700;
     private final int pocketRadius = 30;
@@ -348,7 +358,7 @@
     }
 
     private void renderBall(Graphics2D g2d, double centerX, double centerY){
-        createBallTriangle(centerX, centerY, 5, BilliardBall.width);
+        createBallTriangle(centerX, centerY, 5, BilliardBall.radius);
 
         for(BilliardBall ball : balls) {
             ball.drawBall(g2d);
