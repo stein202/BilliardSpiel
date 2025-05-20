@@ -13,6 +13,7 @@ public class BilliardTable extends JPanel {
     private final int height = 700;
     private final int pocketRadius = 30;
     private final int cushionThickness = 20;
+    private final BilliardQueue billiardQueue;
 
     private final Color tableColor = new Color(92, 158, 49, 255);
     private final Color cushionColor = new Color(131, 214, 77, 255);
@@ -25,6 +26,7 @@ public class BilliardTable extends JPanel {
     public BilliardTable() {
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.DARK_GRAY);
+        billiardQueue = new BilliardQueue();
     }
 
     @Override
@@ -274,6 +276,8 @@ public class BilliardTable extends JPanel {
         drawPocket(g2d, pocketCenterX, pocketY - 5); // oben mitte
         drawPocket(g2d, pocketCenterX, pocketBottomY + 5); // unten mitte
         renderBall(g2d, ((double) (pocketCenterX + pocketRightX) /2), (double) (pocketBottomY/2) + 25);
+        billiardQueue.setBall(balls.get(0));
+        billiardQueue.draw(g2d);
     }
 
     private void drawPocket(Graphics2D g, float x, float y) {
@@ -358,6 +362,10 @@ public class BilliardTable extends JPanel {
     }
 
     private void renderBall(Graphics2D g2d, double centerX, double centerY){
+        BilliardBall startBall = new BilliardBall(0, centerX-BilliardBall.radius*20, centerY);
+        startBall.drawBall(g2d, startBall);
+        balls.add(startBall);
+
         createBallTriangle(centerX, centerY, 5, BilliardBall.radius);
 
         for(BilliardBall ball : balls) {
@@ -368,7 +376,7 @@ public class BilliardTable extends JPanel {
     public void createBallTriangle(double startX, double startY, int numRows, double ballDiameter) {
         double h = ballDiameter * Math.sqrt(3) / 2;
 
-        int ballId = 0;
+        int ballId = 1;
         for (int row = 0; row < numRows; row++) {
             double x = startX + row * h;
             double yStart = startY - row * ballDiameter / 2;
@@ -379,5 +387,7 @@ public class BilliardTable extends JPanel {
             }
         }
     }
+
+}
 
 }
