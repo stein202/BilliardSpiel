@@ -9,8 +9,6 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 
 public class BilliardTable extends JPanel {
-    private final int width = 1400;
-    private final int height = 700;
     private final int pocketRadius = 30;
     private final int cushionThickness = 20;
     private final BilliardQueue billiardQueue;
@@ -23,10 +21,15 @@ public class BilliardTable extends JPanel {
 
     public ArrayList<BilliardBall> balls = new ArrayList<>();
 
-    public BilliardTable() {
-        setPreferredSize(new Dimension(width, height));
+    public BilliardTable(GameFrame g) {
+        setPreferredSize(new Dimension(GameFrame.width, GameFrame.height));
         setBackground(Color.DARK_GRAY);
         billiardQueue = new BilliardQueue();
+        billiardQueue.setOpaque(false);
+        billiardQueue.setVisible(true);
+        billiardQueue.setBounds(0, 0, GameFrame.width, GameFrame.height);
+        g.add(billiardQueue);
+        g.setComponentZOrder(billiardQueue, 0);
     }
 
     @Override
@@ -46,25 +49,25 @@ public class BilliardTable extends JPanel {
 
         int tableX = outerMargin + frameThickness;
         int tableY = outerMargin + frameThickness;
-        int tableWidth = width - 2 * (outerMargin + frameThickness);
-        int tableHeight = height - 2 * (outerMargin + frameThickness);
+        int tableWidth = GameFrame.width - 2 * (outerMargin + frameThickness);
+        int tableHeight = GameFrame.height - 2 * (outerMargin + frameThickness);
 
         float centerX = tableX + tableWidth / 2f;
         float centerY = tableY + tableHeight / 2f;
         float radius = Math.max(tableWidth, tableHeight) / 2f;
 
         int pocketY = outerMargin + outlineSize - 5;
-        int pocketBottomY = height - (pocketY + pocketRadius * 2);
+        int pocketBottomY = GameFrame.height - (pocketY + pocketRadius * 2);
         int pocketX = outerMargin + outlineSize - 5;
-        int pocketRightX = width - (pocketX + pocketRadius * 2);
+        int pocketRightX = GameFrame.width - (pocketX + pocketRadius * 2);
         int pocketCenterX = this.getWidth() / 2 - pocketRadius;
 
         // Holzrahmen
         g2d.setColor(woodColor1);
         int woodX = outerMargin - outlineSize;
         int woodY = outerMargin - outlineSize;
-        int woodWidth = width - 2 * outerMargin + outlineSize * 2;
-        int woodHeight = height - 2 * outerMargin + outlineSize * 2;
+        int woodWidth = GameFrame.width - 2 * outerMargin + outlineSize * 2;
+        int woodHeight = GameFrame.height - 2 * outerMargin + outlineSize * 2;
 
         // Holzrahmen für oben
         drawWoodRim(g2d, woodX, woodY, woodWidth, (float) (woodHeight - tableHeight) / 2, "TOP"); // oben
@@ -75,11 +78,11 @@ public class BilliardTable extends JPanel {
         // Pocket Casing
         int offset = 1;
         drawPocketCasing(g2d, pocketX - offset, pocketY - offset); // oben links
-        drawPocketCasing(g2d, width - (pocketX + pocketRadius * 2) + offset, pocketY - offset); // oben rechts
-        drawPocketCasing(g2d, pocketX - offset, height - (pocketY + pocketRadius * 2) + offset); // unten links
-        drawPocketCasing(g2d, width - (pocketX + pocketRadius * 2) + offset, height - (pocketY + pocketRadius * 2) + offset); // unten rechts
+        drawPocketCasing(g2d, GameFrame.width - (pocketX + pocketRadius * 2) + offset, pocketY - offset); // oben rechts
+        drawPocketCasing(g2d, pocketX - offset, GameFrame.height - (pocketY + pocketRadius * 2) + offset); // unten links
+        drawPocketCasing(g2d, GameFrame.width - (pocketX + pocketRadius * 2) + offset, GameFrame.height - (pocketY + pocketRadius * 2) + offset); // unten rechts
         drawPocketCasing(g2d, centerX - pocketRadius, pocketY - offset); // oben mitte
-        drawPocketCasing(g2d, centerX - pocketRadius, height - (pocketY + pocketRadius * 2) + offset);
+        drawPocketCasing(g2d, centerX - pocketRadius, GameFrame.height - (pocketY + pocketRadius * 2) + offset);
 
 
         // Grüner Tisch
@@ -276,8 +279,6 @@ public class BilliardTable extends JPanel {
         drawPocket(g2d, pocketCenterX, pocketY - 5); // oben mitte
         drawPocket(g2d, pocketCenterX, pocketBottomY + 5); // unten mitte
         renderBall(g2d, ((double) (pocketCenterX + pocketRightX) /2), (double) (pocketBottomY/2) + 25);
-        billiardQueue.setBall(balls.get(0));
-        billiardQueue.draw(g2d);
     }
 
     private void drawPocket(Graphics2D g, float x, float y) {
@@ -371,6 +372,7 @@ public class BilliardTable extends JPanel {
         for(BilliardBall ball : balls) {
             ball.drawBall(g2d);
         }
+        billiardQueue.setBall(balls.get(0));
     }
 
     public void createBallTriangle(double startX, double startY, int numRows, double ballDiameter) {
@@ -387,5 +389,4 @@ public class BilliardTable extends JPanel {
             }
         }
     }
-
 }
