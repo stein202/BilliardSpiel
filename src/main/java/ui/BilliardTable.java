@@ -33,6 +33,14 @@ public class BilliardTable extends JPanel {
         billiardQueue.setBounds(0, 0, GameFrame.width, GameFrame.height);
         g.add(billiardQueue);
         g.setComponentZOrder(billiardQueue, 0);
+
+        double centerX = GameFrame.width / 2.0;
+        double centerY = GameFrame.height / 2.0 + 25;
+        BilliardBall cueBall = new BilliardBall(0, centerX - BilliardBall.radius * 20, centerY);
+        balls.add(cueBall);
+
+        createBallTriangle(centerX, centerY, 5, BilliardBall.radius);
+        billiardQueue.setBall(cueBall);
     }
 
     @Override
@@ -289,7 +297,10 @@ public class BilliardTable extends JPanel {
         drawPocket(g2d, pocketRightX, pocketBottomY); // unten rechts
         drawPocket(g2d, pocketCenterX, pocketY - 5); // oben mitte
         drawPocket(g2d, pocketCenterX, pocketBottomY + 5); // unten mitte
-        renderBall(g2d, ((double) (pocketCenterX + pocketRightX) /2), (double) (pocketBottomY/2) + 25);
+
+        for (BilliardBall ball : balls) {
+            ball.drawBall(g2d, ball);
+        }
     }
 
     private void drawPocket(Graphics2D g, float x, float y) {
@@ -371,19 +382,6 @@ public class BilliardTable extends JPanel {
         );
         g.setPaint(woodGradient);
         g.fill(new RoundRectangle2D.Float(x, y, width, height, 50, 50));
-    }
-
-    private void renderBall(Graphics2D g2d, double centerX, double centerY){
-        BilliardBall startBall = new BilliardBall(0, centerX-BilliardBall.radius*20, centerY);
-        startBall.drawBall(g2d, startBall);
-        balls.add(startBall);
-
-        createBallTriangle(centerX, centerY, 5, BilliardBall.radius);
-
-        for(BilliardBall ball : balls) {
-            ball.drawBall(g2d, ball);
-        }
-        billiardQueue.setBall(balls.get(0));
     }
 
     public void createBallTriangle(double startX, double startY, int numRows, double ballDiameter) {
