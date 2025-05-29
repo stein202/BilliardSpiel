@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Line2D;
 
 public class BilliardQueue extends JPanel implements MouseListener, MouseMotionListener {
     public Turn turn;
@@ -15,6 +14,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     public BilliardBall ball;
     public static final int laenge = 800;
     public boolean moveable = false;
+    public final int queueLength = 500;
+    public int ballDistance = 10;
 
     private int mouseStartX;
     private int mouseStartY;
@@ -35,17 +36,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         this.turn = Turn.PLAYER1;
         this.angle = 0;
 
-        // KRITISCHER FIX: MouseListener registrieren!
         addMouseListener(this);
         addMouseMotionListener(this);
-    }
-
-    public void switchPlayerTurn() {
-        if (turn == Turn.PLAYER1) {
-            this.turn = Turn.PLAYER2;
-        } else {
-            this.turn = Turn.PLAYER1;
-        }
     }
 
     public void setBall(BilliardBall b) {
@@ -55,17 +47,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (ball == null || !moveable) return;
+        if (ball == null) return;
 
-        // MINIMAL super call - nur was nötig ist
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // ULTRA-FAST Berechnungen - gecachte Werte verwenden
-        int mittelPunktX = (int) ball.x + (BilliardBall.radius >> 1); // Bit-Shift
-        int mittelPunktY = (int) ball.y + (BilliardBall.radius >> 1);
-
-        // Trigonometrische Werte nur bei Bedarf neu berechnen
         if (cachedAngle != angle) {
             double winkel = Math.toRadians(angle);
             cachedCos = Math.cos(winkel);
@@ -73,25 +56,22 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
             cachedAngle = angle;
         }
 
-        // Konstanten als finale Variablen für JIT-Optimierung
-        final int radius = BilliardBall.radius;
-        final int queueLength = 150;
-        final int ballDistance = 10;
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Direkte int-Berechnungen wo möglich
+        int mittelPunktX = (int) ball.x + (BilliardBall.radius >> 1);
+        int mittelPunktY = (int) ball.y + (BilliardBall.radius >> 1);
+
+        final int radius = BilliardBall.radius;
+
         int startX = (int) (mittelPunktX - (radius + ballDistance) * cachedCos);
         int startY = (int) (mittelPunktY - (radius + ballDistance) * cachedSin);
         int endX = (int) (startX - queueLength * cachedCos);
         int endY = (int) (startY - queueLength * cachedSin);
 
-        // MINIMALES Rendering - nur das Nötigste
         g2d.setColor(new Color(139, 69, 19));
         g2d.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2d.drawLine(startX, startY, endX, endY); // drawLine ist schneller als Line2D
-
-        // Queue-Spitze als gefülltes Rechteck (schneller als Oval)
-        g2d.setColor(new Color(101, 67, 33));
-        g2d.fillRect(startX - 3, startY - 3, 6, 6);
+        g2d.drawLine(startX, startY, endX, endY);
     }
 
     public void setMoveable() {
@@ -100,11 +80,11 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) { // Verwende Konstante statt 1
+        if (e.getButton() == MouseEvent.BUTTON1) {
             setMoveable();
             mouseStartX = e.getX();
             mouseStartY = e.getY();
-            repaint(); // Neu zeichnen nach Klick
+            repaint();
         }
     }
 
@@ -168,7 +148,10 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
             cachedSin = Math.sin(radians);
             cachedAngle = angle;
 
-            repaint();
+            Timer timer = new Timer(20, a -> {
+                repaint();
+            });
+            timer.start();
         }
     }
 }
