@@ -54,14 +54,12 @@ public class BilliardTable extends JPanel {
         g.add(billiardQueue);
         g.setComponentZOrder(billiardQueue, 0);
 
-
         double whiteballx = (centerX + pocketCenterX) /2;
         double whitebally = (GameFrame.height/2) -15;
         double rectanglex = ((centerX+pocketRightX)/2) -90 ;
         double rectangley = whitebally;
         BilliardBall cueBall = new BilliardBall(0, whiteballx + BilliardBall.radius , whitebally);
         balls.add(cueBall);
-
         createBallTriangle(rectanglex, rectangley, 5, BilliardBall.radius);
         billiardQueue.setBall(cueBall);
     }
