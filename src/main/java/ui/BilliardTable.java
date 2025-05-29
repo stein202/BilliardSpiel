@@ -27,7 +27,7 @@ public class BilliardTable extends JPanel {
 
     public ArrayList<BilliardBall> balls = new ArrayList<>();
 
-    //Ballpositionen berechnen + Löcherpositionen + Tischpositionen
+    //Ballpositionen berechnen + Löcherpositionen
     int tableX = outerMargin + frameThickness;
     int tableY = outerMargin + frameThickness;
     int tableWidth = GameFrame.width - 2 * (outerMargin + frameThickness);
@@ -42,7 +42,6 @@ public class BilliardTable extends JPanel {
     int pocketX = outerMargin + outlineSize - 5;
     int pocketRightX = GameFrame.width - (pocketX + pocketRadius * 2);
     int pocketCenterX = this.getWidth() / 2 - pocketRadius;
-
 
     public BilliardTable(JFrame g) {
         setPreferredSize(new Dimension(GameFrame.width, GameFrame.height));
@@ -84,6 +83,24 @@ public class BilliardTable extends JPanel {
             frames = 0;
             lastTime = System.currentTimeMillis();
         }
+
+
+
+        int tableX = outerMargin + frameThickness;
+        int tableY = outerMargin + frameThickness;
+        int tableWidth = GameFrame.width - 2 * (outerMargin + frameThickness);
+        int tableHeight = GameFrame.height - 2 * (outerMargin + frameThickness);
+
+        float centerX = tableX + tableWidth / 2f;
+        float centerY = tableY + tableHeight / 2f;
+        float radius = Math.max(tableWidth, tableHeight) / 2f;
+
+        int pocketY = outerMargin + outlineSize - 5;
+        int pocketBottomY = GameFrame.height - (pocketY + pocketRadius * 2);
+        int pocketX = outerMargin + outlineSize - 5;
+        int pocketRightX = GameFrame.width - (pocketX + pocketRadius * 2);
+        int pocketCenterX = this.getWidth() / 2 - pocketRadius;
+
         // Holzrahmen
         g2d.setColor(woodColor1);
         int woodX = outerMargin - outlineSize;
