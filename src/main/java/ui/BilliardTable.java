@@ -21,7 +21,7 @@ public class BilliardTable extends JPanel {
 
     public ArrayList<BilliardBall> balls = new ArrayList<>();
 
-    public BilliardTable(GameFrame g) {
+    public BilliardTable(JFrame g) {
         setPreferredSize(new Dimension(GameFrame.width, GameFrame.height));
         setBackground(Color.DARK_GRAY);
         billiardQueue = new BilliardQueue();
