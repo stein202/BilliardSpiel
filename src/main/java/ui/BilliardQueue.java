@@ -13,7 +13,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     public int angle;
     public BilliardBall ball;
     public final int queueLength = 500;
-    public int ballDistance = 10;
+    public int ballDistance = 0;
 
     private int lastMouseX = -1;
     private int lastMouseY = -1;
@@ -58,8 +58,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
         final int radius = BilliardBall.radius;
 
-        int startX = (int) (mittelPunktX - (radius + ballDistance + pullBackDistance) * cachedCos);
-        int startY = (int) (mittelPunktY - (radius + ballDistance + pullBackDistance) * cachedSin);
+        int startX = (int) (mittelPunktX - (radius/2+4 + pullBackDistance) * cachedCos);
+        int startY = (int) (mittelPunktY - (radius/2+4 + pullBackDistance) * cachedSin);
         int endX = (int) (startX - queueLength * cachedCos);
         int endY = (int) (startY - queueLength * cachedSin);
 
