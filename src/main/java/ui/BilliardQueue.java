@@ -12,25 +12,19 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     public Turn turn;
     public int angle;
     public BilliardBall ball;
-    public static final int laenge = 800;
-    public boolean moveable = false;
     public final int queueLength = 500;
     public int ballDistance = 10;
 
-    private int mouseStartX;
-    private int mouseStartY;
-
-    // HARDCORE Performance-Optimierung: Caching & Throttling
     private int lastMouseX = -1;
     private int lastMouseY = -1;
-    private static final int MOUSE_THRESHOLD = 5; // Größerer Threshold
     private long lastUpdateTime = 0;
-    private static final long UPDATE_INTERVAL = 16; // ~60 FPS max
 
-    // Gecachte Werte für wiederholte Berechnungen
     private double cachedCos = 0;
     private double cachedSin = 0;
     private int cachedAngle = -1;
+
+    private int pullBackDistance = 0;
+    private Timer chargeTimer;
 
     public BilliardQueue() {
         this.turn = Turn.PLAYER1;
@@ -64,8 +58,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
         final int radius = BilliardBall.radius;
 
-        int startX = (int) (mittelPunktX - (radius + ballDistance) * cachedCos);
-        int startY = (int) (mittelPunktY - (radius + ballDistance) * cachedSin);
+        int startX = (int) (mittelPunktX - (radius + ballDistance + pullBackDistance) * cachedCos);
+        int startY = (int) (mittelPunktY - (radius + ballDistance + pullBackDistance) * cachedSin);
         int endX = (int) (startX - queueLength * cachedCos);
         int endY = (int) (startY - queueLength * cachedSin);
 
@@ -74,25 +68,38 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         g2d.drawLine(startX, startY, endX, endY);
     }
 
-    public void setMoveable() {
-        moveable = !moveable;
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            setMoveable();
-            mouseStartX = e.getX();
-            mouseStartY = e.getY();
+        if (e.getButton() == MouseEvent.BUTTON3) {
             repaint();
         }
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            pullBackDistance = 0;
+
+            chargeTimer = new Timer(20, evt -> {
+                pullBackDistance += 2;
+                if (pullBackDistance > 100) pullBackDistance = 100;
+                repaint();
+            });
+            chargeTimer.start();
+        }
+    }
 
     @Override
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            if (chargeTimer != null) {
+                chargeTimer.stop();
+            }
+
+            pullBackDistance = 0;
+            repaint();
+        }
+    }
 
     @Override
     public void mouseEntered(MouseEvent e) {}
@@ -105,53 +112,30 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!moveable || ball == null) return;
-
-        // THROTTLING: Max 60 FPS Updates
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastUpdateTime < UPDATE_INTERVAL) {
-            return;
-        }
+        if (ball == null) return;
 
         int currentX = e.getX();
         int currentY = e.getY();
 
-        // Aggressiverer Threshold
-        if (Math.abs(currentX - lastMouseX) < MOUSE_THRESHOLD &&
-                Math.abs(currentY - lastMouseY) < MOUSE_THRESHOLD) {
-            return;
-        }
-
         lastMouseX = currentX;
         lastMouseY = currentY;
-        lastUpdateTime = currentTime;
 
-        // OPTIMIERTE Berechnungen - weniger Casts
-        int ballCenterX = (int) ball.x + (BilliardBall.radius >> 1); // Bit-Shift statt Division
+        int ballCenterX = (int) ball.x + (BilliardBall.radius >> 1);
         int ballCenterY = (int) ball.y + (BilliardBall.radius >> 1);
 
-        // Fast inverse square root für Distanz (falls nötig)
         int deltaX = currentX - ballCenterX;
         int deltaY = currentY - ballCenterY;
 
-        // Lookup-Table für atan2 wäre optimal, aber Math.atan2 ist OK
         int newAngle = (int) Math.toDegrees(Math.atan2(deltaY, deltaX));
         if (newAngle < 0) newAngle += 360;
 
-        // Nur bei signifikanter Änderung
-        if (Math.abs(newAngle - angle) > 2) { // Größerer Threshold
-            angle = newAngle;
+        angle = newAngle;
 
-            // Trigonometrische Werte cachen
-            double radians = Math.toRadians(angle);
-            cachedCos = Math.cos(radians);
-            cachedSin = Math.sin(radians);
-            cachedAngle = angle;
+        double radians = Math.toRadians(angle);
+        cachedCos = Math.cos(radians);
+        cachedSin = Math.sin(radians);
+        cachedAngle = angle;
 
-            Timer timer = new Timer(20, a -> {
-                repaint();
-            });
-            timer.start();
-        }
+        repaint();
     }
 }

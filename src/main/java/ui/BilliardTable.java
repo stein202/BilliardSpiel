@@ -36,7 +36,7 @@ public class BilliardTable extends JPanel {
 
         double centerX = GameFrame.width / 2.0;
         double centerY = GameFrame.height / 2.0 + 25;
-        BilliardBall cueBall = new BilliardBall(0, centerX - BilliardBall.radius * 20, centerY);
+        BilliardBall cueBall = new BilliardBall(0, centerX - BilliardBall.radius, centerY);
         balls.add(cueBall);
 
         createBallTriangle(centerX, centerY, 5, BilliardBall.radius);
