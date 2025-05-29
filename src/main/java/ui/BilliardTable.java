@@ -19,6 +19,9 @@ public class BilliardTable extends JPanel {
     private final Color woodColor2 = new Color(140, 85, 50);
     private final Color woodColor3 = new Color(100, 60, 35);
 
+    private long lastTime = System.currentTimeMillis();
+    private int frames = 0;
+
     public ArrayList<BilliardBall> balls = new ArrayList<>();
 
     public BilliardTable(JFrame g) {
@@ -42,6 +45,14 @@ public class BilliardTable extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+
+        super.paintComponent(g);
+        frames++;
+        if (System.currentTimeMillis() - lastTime >= 1000) {
+            System.out.println("FPS: " + frames);
+            frames = 0;
+            lastTime = System.currentTimeMillis();
+        }
 
         int outerMargin = 30;
         int frameThickness = 30;
@@ -370,7 +381,7 @@ public class BilliardTable extends JPanel {
         createBallTriangle(centerX, centerY, 5, BilliardBall.radius);
 
         for(BilliardBall ball : balls) {
-            ball.drawBall(g2d);
+            ball.drawBall(g2d, ball);
         }
         billiardQueue.setBall(balls.get(0));
     }
