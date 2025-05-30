@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionListener;
 public class BilliardQueue extends JPanel implements MouseListener, MouseMotionListener {
     public Turn turn;
     public int angle;
+    public int angle2;
     public BilliardBall ball;
     public final int queueLength = 500;
     public int ballDistance = 0;
@@ -22,6 +23,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     private double cachedCos = 0;
     private double cachedSin = 0;
     private int cachedAngle = -1;
+    double newcachedCos = 0;
+    double newcachedSin = 0;
 
     private int pullBackDistance = 0;
     private Timer chargeTimer;
@@ -66,6 +69,17 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         g2d.setColor(new Color(139, 69, 19));
         g2d.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.drawLine(startX, startY, endX, endY);
+
+        //Linie hinter dem Queue
+        int linex = (int) (mittelPunktX + (radius/2+4 ) * newcachedCos);
+        int liney = (int) (mittelPunktY - (radius/2+4 ) * newcachedSin);
+        int endeX = (int) (startX + queueLength * newcachedCos);
+        int endeY = (int) (startY - queueLength * newcachedSin);
+
+        g2d.setColor(new Color(185, 6, 191));
+        g2d.setStroke(new BasicStroke(7, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.drawLine(linex, liney, endeX, endeY);
+
     }
 
     @Override
@@ -127,14 +141,23 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         int deltaY = currentY - ballCenterY;
 
         int newAngle = (int) Math.toDegrees(Math.atan2(deltaY, deltaX));
+        int newAngle2 = (int) (Math.toDegrees(Math.atan2(deltaY, deltaX))*-1);
         if (newAngle < 0) newAngle += 360;
 
         angle = newAngle;
+        angle2 = newAngle2;
 
         double radians = Math.toRadians(angle);
         cachedCos = Math.cos(radians);
         cachedSin = Math.sin(radians);
         cachedAngle = angle;
+
+        //Für Linie hinter dem Queue
+        double newradians = Math.toRadians(angle2);
+        newcachedCos = Math.cos(newradians);
+        newcachedSin = Math.sin(newradians);
+         int newcachedAngle = angle2;
+
 
         repaint();
     }
