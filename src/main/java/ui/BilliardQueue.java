@@ -19,13 +19,14 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     private int lastMouseX = -1;
     private int lastMouseY = -1;
-    private long lastUpdateTime = 0;
+    private final long lastUpdateTime = 0;
 
     private double cachedCos = 0;
     private double cachedSin = 0;
     private int cachedAngle = -1;
     double newcachedCos = 0;
     double newcachedSin = 0;
+    int cachedPullBack;
 
     private int pullBackDistance = 0;
     private Timer chargeTimer;
@@ -33,6 +34,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     public BilliardQueue() {
         this.turn = Turn.PLAYER1;
         this.angle = 0;
+
+        setOpaque(false);
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -62,8 +65,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
         final int radius = BilliardBall.radius;
 
-        int startX = (int) (mittelPunktX - (radius/2+4 + pullBackDistance) * cachedCos);
-        int startY = (int) (mittelPunktY - (radius/2+4 + pullBackDistance) * cachedSin);
+        int startX = (int) (mittelPunktX - (radius / 2 + 4 + pullBackDistance) * cachedCos);
+        int startY = (int) (mittelPunktY - (radius / 2 + 4 + pullBackDistance) * cachedSin);
         int endX = (int) (startX - queueLength * cachedCos);
         int endY = (int) (startY - queueLength * cachedSin);
 
@@ -80,10 +83,10 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         double dy = -newcachedSin;
 
 
-        int minX = BilliardTable.tableX+radius - 8;
-        int maxX = BilliardTable.pocketRightX+ radius/4;
-        int minY1 = BilliardTable.tableY+radius - 8;
-        int maxY = BilliardTable.pocketBottomY + 8 ;
+        int minX = BilliardTable.tableX + radius - 8;
+        int maxX = BilliardTable.pocketRightX + radius / 4;
+        int minY1 = BilliardTable.tableY + radius - 8;
+        int maxY = BilliardTable.pocketBottomY + 8;
 
         int collisionX = linex;
         int collisionY = liney;
@@ -112,19 +115,23 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            repaint();
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (e.getButton() == MouseEvent.BUTTON1 && ball.isBallStill()) {
+            if (chargeTimer != null && chargeTimer.isRunning()) {
+                chargeTimer.stop();
+            }
+
             pullBackDistance = 0;
 
             chargeTimer = new Timer(20, evt -> {
-                pullBackDistance += 3;
-                if (pullBackDistance > 100) pullBackDistance = 100;
+                pullBackDistance += 6;
+                if (pullBackDistance > 100) {
+                    pullBackDistance = 100;
+                    chargeTimer.stop();
+                }
                 repaint();
             });
             chargeTimer.start();
@@ -133,26 +140,30 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            if (chargeTimer != null) {
+        if (e.getButton() == MouseEvent.BUTTON1 && ball.isBallStill()) {
+            if (chargeTimer != null && chargeTimer.isRunning()) {
                 chargeTimer.stop();
+                chargeTimer = null;
             }
-            int p = pullBackDistance;
+            cachedPullBack = pullBackDistance;
             pullBackDistance = 0;
             repaint();
 
-            ball.calcImpulse(p, angle);
+            ball.calcImpulse(cachedPullBack, angle);
         }
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     @Override
-    public void mouseDragged(MouseEvent e) {}
+    public void mouseDragged(MouseEvent e) {
+    }
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -171,7 +182,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         int deltaY = currentY - ballCenterY;
 
         int newAngle = (int) Math.toDegrees(Math.atan2(deltaY, deltaX));
-        int newAngle2 = (int) (Math.toDegrees(Math.atan2(deltaY, deltaX))*-1);
+        int newAngle2 = (int) (Math.toDegrees(Math.atan2(deltaY, deltaX)) * -1);
         if (newAngle < 0) newAngle += 360;
 
         angle = newAngle;
@@ -186,7 +197,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         double newradians = Math.toRadians(angle2);
         newcachedCos = Math.cos(newradians);
         newcachedSin = Math.sin(newradians);
-         int newcachedAngle = angle2;
+        int newcachedAngle = angle2;
 
 
         repaint();

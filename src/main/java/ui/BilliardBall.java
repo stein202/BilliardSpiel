@@ -62,15 +62,30 @@ public class BilliardBall {
         this.x += vx;
         this.y += vy;
 
+        if (x <= BilliardTable.tableX || x + radius >= BilliardTable.pocketRightX) {
+            vx = -vx;
+            x = Math.max(BilliardTable.tableX, Math.min(x, BilliardTable.pocketRightX - radius));
+        }
+
+        if (y <= BilliardTable.tableY || y + radius >= BilliardTable.pocketBottomY) {
+            vy = -vy;
+            y = Math.max(BilliardTable.tableY, Math.min(y, BilliardTable.pocketBottomY - radius));
+        }
+
         vx *= 0.98;
         vy *= 0.98;
 
         if (Math.abs(vx) < 0.05) vx = 0;
         if (Math.abs(vy) < 0.05) vy = 0;
-        if (Math.abs(vx) < 0.05 || Math.abs(vy) < 0.05) physicsTimer.stop();
+
+        if (vx == 0 && vy == 0 && physicsTimer != null) physicsTimer.stop();
 
         if (ballPanel != null) {
             ballPanel.repaint();
         }
+    }
+
+    public boolean isBallStill() {
+        return (Math.abs(vx) < 0.05 || Math.abs(vy) < 0.05);
     }
 }

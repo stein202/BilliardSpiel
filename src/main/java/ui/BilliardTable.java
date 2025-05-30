@@ -9,6 +9,8 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 
 public class BilliardTable extends JPanel {
+    public Area cushion;
+
     private final static int pocketRadius = 30;
     private final static int cushionThickness = 20;
     private final BilliardQueue billiardQueue;
@@ -35,8 +37,6 @@ public class BilliardTable extends JPanel {
     static int tableHeight = GameFrame.height - 2 * (outerMargin + frameThickness);
 
     static float centerX = tableX + tableWidth / 2;
-    static float centerY = tableY + tableHeight / 2;
-    static float radius = Math.max(tableWidth, tableHeight) / 2;
 
     static int pocketY = outerMargin + outlineSize - 5;
     static int pocketBottomY = GameFrame.height - (pocketY + pocketRadius * 2);
@@ -144,7 +144,7 @@ public class BilliardTable extends JPanel {
         Shape right = new Rectangle2D.Float(tableX + tableWidth - cushionThickness, tableY, cushionThickness, tableHeight);
         Shape bottom = new Rectangle2D.Float(tableX, tableY + tableHeight - cushionThickness, tableWidth, cushionThickness);
 
-        Area cushion = new Area(top);
+        cushion = new Area(top);
         cushion.add(new Area(left));
         cushion.add(new Area(right));
         cushion.add(new Area(bottom));
