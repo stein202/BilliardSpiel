@@ -15,6 +15,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     public BilliardBall ball;
     public final int queueLength = 500;
 
+
     private int lastMouseX = -1;
     private int lastMouseY = -1;
     private long lastUpdateTime = 0;
@@ -69,15 +70,42 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         g2d.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.drawLine(startX, startY, endX, endY);
 
-        //Linie hinter dem Queue
-        int linex = (int) (mittelPunktX + (radius/2+4 ) * newcachedCos);
-        int liney = (int) (mittelPunktY - (radius/2+4 ) * newcachedSin);
-        int endeX = (int) (startX + queueLength * newcachedCos);
-        int endeY = (int) (startY - queueLength * newcachedSin);
 
-        g2d.setColor(new Color(185, 6, 191));
-        g2d.setStroke(new BasicStroke(7, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2d.drawLine(linex, liney, endeX, endeY);
+        int linex = (int) (mittelPunktX + (radius / 2 + 4) * newcachedCos);
+        int liney = (int) (mittelPunktY - (radius / 2 + 4) * newcachedSin);
+
+
+        double dx = newcachedCos;
+        double dy = -newcachedSin;
+
+
+        int minX = BilliardTable.tableX+radius - 8;
+        int maxX = BilliardTable.pocketRightX+ radius/4;
+        int minY1 = BilliardTable.tableY+radius - 8;
+        int maxY = BilliardTable.pocketBottomY + 8 ;
+
+        int collisionX = linex;
+        int collisionY = liney;
+
+        int maxLineLength = 1000;
+        int step = 1;
+
+        for (int i = 0; i < maxLineLength; i += step) {
+            int x = (int) (linex + i * dx);
+            int y = (int) (liney + i * dy);
+
+
+            if (x < minX || x > maxX || y < minY1 || y > maxY) {
+                collisionX = x;
+                collisionY = y;
+                break;
+            }
+
+        }
+
+        g2d.setColor(new Color(255, 255, 255)); // Weiße Linie
+        g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.drawLine(linex, liney, collisionX, collisionY);
 
     }
 
