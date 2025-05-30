@@ -14,6 +14,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     public int angle2;
     public BilliardBall ball;
     public final int queueLength = 500;
+    public final static double masse = 0.5;
 
     private int lastMouseX = -1;
     private int lastMouseY = -1;
@@ -108,9 +109,11 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
             if (chargeTimer != null) {
                 chargeTimer.stop();
             }
-
+            int p = pullBackDistance;
             pullBackDistance = 0;
             repaint();
+
+            ball.calcImpulse(p, angle);
         }
     }
 

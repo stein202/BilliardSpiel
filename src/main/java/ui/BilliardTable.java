@@ -12,6 +12,7 @@ public class BilliardTable extends JPanel {
     private final int pocketRadius = 30;
     private final int cushionThickness = 20;
     private final BilliardQueue billiardQueue;
+    private final BallPanel ballPanel;
     private final int outerMargin = 30;
     private final int frameThickness = 30;
     private final int outlineSize = 5;
@@ -51,8 +52,6 @@ public class BilliardTable extends JPanel {
         billiardQueue.setVisible(true);
         billiardQueue.setBounds(0, 0, GameFrame.width, GameFrame.height);
         g.add(billiardQueue);
-        g.setComponentZOrder(billiardQueue, 0);
-
 
         double whiteballx = (centerX + pocketCenterX) /2;
         double whitebally = (GameFrame.height/2) -15;
@@ -63,6 +62,16 @@ public class BilliardTable extends JPanel {
 
         createBallTriangle(rectanglex, rectangley, 5, BilliardBall.radius);
         billiardQueue.setBall(cueBall);
+
+        ballPanel = new BallPanel(balls);
+        ballPanel.setOpaque(false);
+        ballPanel.setVisible(true);
+        ballPanel.setBounds(0, 0, GameFrame.width, GameFrame.height);
+        g.add(ballPanel);
+
+        for (BilliardBall ball: balls) {
+            ball.setBallPanel(ballPanel);
+        }
     }
 
     @Override
@@ -317,10 +326,6 @@ public class BilliardTable extends JPanel {
         drawPocket(g2d, pocketRightX, pocketBottomY); // unten rechts
         drawPocket(g2d, pocketCenterX, pocketY - 5); // oben mitte
         drawPocket(g2d, pocketCenterX, pocketBottomY + 5); // unten mitte
-
-        for (BilliardBall ball : balls) {
-            ball.drawBall(g2d, ball);
-        }
     }
 
     private void drawPocket(Graphics2D g, float x, float y) {
