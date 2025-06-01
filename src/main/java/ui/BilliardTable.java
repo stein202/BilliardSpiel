@@ -34,7 +34,6 @@ public class BilliardTable extends JPanel {
     static int tableX = outerMargin + frameThickness;
     static int tableY = outerMargin + frameThickness;
     static int tableWidth = GameFrame.width - 2 * (outerMargin + frameThickness);
-    static int tableHeight = GameFrame.height - 2 * (outerMargin + frameThickness);
 
     static float centerX = tableX + tableWidth / 2;
 

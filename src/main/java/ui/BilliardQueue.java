@@ -49,6 +49,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
     @Override
     protected void paintComponent(Graphics g) {
         if (ball == null) return;
+        if (!ball.isBallStill()) return;
 
         if (cachedAngle != angle) {
             double winkel = Math.toRadians(angle);
