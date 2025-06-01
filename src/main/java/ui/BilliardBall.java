@@ -13,7 +13,7 @@ public class BilliardBall {
     public double x, y;
     public double vx, vy;
 
-    private BallPanel ballPanel;
+    public BallPanel ballPanel;
     private Timer physicsTimer;
 
     // 0 = weiße Kugel, 5 = schwarze Kugel, 1-7 Team Rot, 9-15 Team Blau
@@ -88,4 +88,5 @@ public class BilliardBall {
     public boolean isBallStill() {
         return (Math.abs(vx) < 0.05 || Math.abs(vy) < 0.05);
     }
+
 }

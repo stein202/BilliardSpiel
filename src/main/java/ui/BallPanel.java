@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.List;
 
 public class BallPanel extends JPanel {
-    private final List<BilliardBall> balls;
+    public final List<BilliardBall> balls;
 
     public BallPanel(List<BilliardBall> balls) {
         this.balls = balls;
