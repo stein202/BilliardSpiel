@@ -79,10 +79,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         int linex = (int) (mittelPunktX + (radius / 2 + 4) * newcachedCos);
         int liney = (int) (mittelPunktY - (radius / 2 + 4) * newcachedSin);
 
-
         double dx = newcachedCos;
         double dy = -newcachedSin;
-
 
         int minX = BilliardTable.tableX + radius - 8;
         int maxX = BilliardTable.pocketRightX + radius / 4;
@@ -95,6 +93,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         int maxLineLength = 1000;
         int step = 1;
 
+        BilliardBall hitBall = null;
+
         for (int i = 0; i < maxLineLength; i += step) {
             int x = (int) (linex + i * dx);
             int y = (int) (liney + i * dy);
@@ -104,7 +104,6 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
                 collisionY = y;
                 break;
             }
-
 
             for (BilliardBall ball : ball.ballPanel.balls) {
                 if (ball == this.ball) continue;
@@ -117,14 +116,48 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
                 double distance = Math.hypot(dxToBall, dyToBall);
 
                 if (distance <= BilliardBall.radius) {
-                    double ratio = (BilliardBall.radius/2) / distance;
+                    double ratio = (BilliardBall.radius / 2) / distance;
                     collisionX = (int) (centerX + dxToBall * ratio);
                     collisionY = (int) (centerY + dyToBall * ratio);
+                    hitBall = ball;
                     i = maxLineLength;
                     break;
                 }
             }
+        }
+
+
+        g2d.setColor(new Color(245, 245, 245));
+        g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.drawLine(linex, liney, collisionX, collisionY);
+
+
+        if (hitBall != null) {
+            int hitCenterX = (int) (hitBall.x + BilliardBall.radius / 2.0);
+            int hitCenterY = (int) (hitBall.y + BilliardBall.radius / 2.0);
+
+            double vecX = collisionX - hitCenterX;
+            double vecY = collisionY - hitCenterY;
+
+            double length = Math.hypot(vecX, vecY);
+            if (length != 0) {
+                vecX /= length *-1;
+                vecY /= length *-1;
             }
+
+            int directionLineLength = 150;
+            int endDirX = (int) (hitCenterX + vecX * directionLineLength);
+            int endDirY = (int) (hitCenterY + vecY * directionLineLength);
+
+            g2d.setColor(Color.white);
+            g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.drawLine(hitCenterX, hitCenterY, endDirX, endDirY);
+        }
+
+
+
+
+
 
         g2d.setColor(new Color(245, 245, 245));
         g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
