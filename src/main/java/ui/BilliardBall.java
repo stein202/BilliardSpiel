@@ -14,10 +14,9 @@ public class BilliardBall {
     public double x, y;
     public double vx, vy;
 
+    public BallPanel ballPanel;
     public Ellipse2D ball;
     private BilliardTable billiardTable;
-
-    private BallPanel ballPanel;
     private Timer physicsTimer;
 
     // 0 = weiße Kugel, 5 = schwarze Kugel, 1-7 Team Rot, 9-15 Team Blau
@@ -112,4 +111,5 @@ public class BilliardBall {
             }
         }
     }
+
 }
