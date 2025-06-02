@@ -12,7 +12,7 @@ public class BilliardTable extends JPanel {
     public Area cushion;
 
     private final static int pocketRadius = 30;
-    private final static int cushionThickness = 20;
+    private final static int cushionThickness = 25;
     private final BilliardQueue billiardQueue;
     private final BallPanel ballPanel;
     private final static int outerMargin = 30;
@@ -66,7 +66,7 @@ public class BilliardTable extends JPanel {
         createBallTriangle(rectanglex, rectangley, 5, BilliardBall.radius);
         billiardQueue.setBall(cueBall);
 
-        ballPanel = new BallPanel(balls);
+        ballPanel = new BallPanel(balls, this);
         ballPanel.setOpaque(false);
         ballPanel.setVisible(true);
         ballPanel.setBounds(0, 0, GameFrame.width, GameFrame.height);
@@ -431,9 +431,8 @@ public class BilliardTable extends JPanel {
     }
 
     public boolean isInPocket(BilliardBall ball) {
-        Ellipse2D ballShape = new Ellipse2D.Double(ball.x, ball.y, BilliardBall.radius, BilliardBall.radius);
         for (Ellipse2D pocket : pockets) {
-            if (pocket.intersects(ball.ball.getBounds2D())) {
+            if (pocket.contains(ball.x + BilliardBall.radius / 2, ball.y + BilliardBall.radius / 2)) {
                 return true;
             }
         }

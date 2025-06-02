@@ -2,13 +2,21 @@ package main.java.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BallPanel extends JPanel {
     public final List<BilliardBall> balls;
+    public final BilliardTable billiardTable;
 
-    public BallPanel(List<BilliardBall> balls) {
+    private java.util.Queue<BilliardBall> ballsToRemove = new LinkedList<>();
+
+    Timer physicsTimer = new Timer(8, e -> updateAllBalls());
+
+    public BallPanel(List<BilliardBall> balls, BilliardTable billiardTable) {
         this.balls = balls;
+        this.billiardTable = billiardTable;
+        physicsTimer.start();
         setOpaque(false);
     }
 
@@ -20,5 +28,21 @@ public class BallPanel extends JPanel {
         for (BilliardBall ball: balls) {
             ball.drawBall(g2d);
         }
+    }
+
+    public void updateAllBalls() {
+        for (BilliardBall ball : balls) {
+            ball.updatePosition();
+        }
+
+        for (BilliardBall ball : ballsToRemove) {
+            billiardTable.balls.remove(ball);
+        }
+
+        repaint();
+    }
+
+    public void removeBall(BilliardBall ball) {
+        ballsToRemove.add(ball);
     }
 }
