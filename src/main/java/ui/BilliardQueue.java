@@ -99,24 +99,42 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
             int x = (int) (linex + i * dx);
             int y = (int) (liney + i * dy);
 
-
             if (x < minX || x > maxX || y < minY1 || y > maxY) {
                 collisionX = x;
                 collisionY = y;
                 break;
             }
 
-        }
 
-        for(BilliardBall ball: ball.ballPanel.balls){
-        }
+            for (BilliardBall ball : ball.ballPanel.balls) {
+                if (ball == this.ball) continue;
+
+                double centerX = ball.x + BilliardBall.radius / 2.0;
+                double centerY = ball.y + BilliardBall.radius / 2.0;
+
+                double dxToBall = x - centerX;
+                double dyToBall = y - centerY;
+                double distance = Math.hypot(dxToBall, dyToBall);
+
+                if (distance <= BilliardBall.radius) {
+                    double ratio = (BilliardBall.radius/2) / distance;
+                    collisionX = (int) (centerX + dxToBall * ratio);
+                    collisionY = (int) (centerY + dyToBall * ratio);
+                    i = maxLineLength;
+                    break;
+                }
+            }
+            }
 
 
 
 
-        g2d.setColor(new Color(255, 255, 255)); // Weiße Line
+
+        g2d.setColor(new Color(245, 245, 245));
         g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.drawLine(linex, liney, collisionX, collisionY);
+
+
 
     }
 

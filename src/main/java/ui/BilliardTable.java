@@ -34,13 +34,16 @@ public class BilliardTable extends JPanel {
     static int tableX = outerMargin + frameThickness;
     static int tableY = outerMargin + frameThickness;
     static int tableWidth = GameFrame.width - 2 * (outerMargin + frameThickness);
+    static int tableHeight = GameFrame.height - 2 * (outerMargin + frameThickness);
 
     static float centerX = tableX + tableWidth / 2;
+    static float centerY = tableY + tableHeight / 2f;
 
     static int pocketY = outerMargin + outlineSize - 5;
     static int pocketBottomY = GameFrame.height - (pocketY + pocketRadius * 2);
     static int pocketX = outerMargin + outlineSize - 5;
     static int pocketRightX = GameFrame.width - (pocketX + pocketRadius * 2);
+
     int pocketCenterX = this.getWidth() / 2 - pocketRadius;
 
     public BilliardTable(JFrame g) {
@@ -97,10 +100,10 @@ public class BilliardTable extends JPanel {
         int tableX = outerMargin + frameThickness;
         int tableY = outerMargin + frameThickness;
         int tableWidth = GameFrame.width - 2 * (outerMargin + frameThickness);
-        int tableHeight = GameFrame.height - 2 * (outerMargin + frameThickness);
+
 
         float centerX = tableX + tableWidth / 2f;
-        float centerY = tableY + tableHeight / 2f;
+
         float radius = Math.max(tableWidth, tableHeight) / 2f;
 
         int pocketY = outerMargin + outlineSize - 5;
