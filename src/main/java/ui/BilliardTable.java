@@ -29,6 +29,7 @@ public class BilliardTable extends JPanel {
     private int frames = 0;
 
     public ArrayList<BilliardBall> balls = new ArrayList<>();
+    public ArrayList<Ellipse2D> pockets = new ArrayList<>();
 
     //Ballpositionen berechnen + Löcherpositionen
     static int tableX = outerMargin + frameThickness;
@@ -73,6 +74,7 @@ public class BilliardTable extends JPanel {
 
         for (BilliardBall ball: balls) {
             ball.setBallPanel(ballPanel);
+            ball.setBilliardTable(this);
         }
     }
 
@@ -335,7 +337,9 @@ public class BilliardTable extends JPanel {
         float centerY = y + pocketRadius;
 
         float radius = pocketRadius;
-        g.fill(new Ellipse2D.Float(centerX - radius, centerY - radius, radius * 2, radius * 2));
+        Ellipse2D pocket = new Ellipse2D.Float(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        pockets.add(pocket);
+        g.fill(pocket);
     }
 
     private void drawPocketCasing(Graphics2D g, float x, float y) {
@@ -424,5 +428,15 @@ public class BilliardTable extends JPanel {
                 balls.add(new BilliardBall(ballId++, x, y));
             }
         }
+    }
+
+    public boolean isInPocket(BilliardBall ball) {
+        Ellipse2D ballShape = new Ellipse2D.Double(ball.x, ball.y, BilliardBall.radius, BilliardBall.radius);
+        for (Ellipse2D pocket : pockets) {
+            if (pocket.intersects(ball.ball.getBounds2D())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
