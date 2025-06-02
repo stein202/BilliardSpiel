@@ -126,16 +126,9 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
             }
             }
 
-
-
-
-
         g2d.setColor(new Color(245, 245, 245));
         g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.drawLine(linex, liney, collisionX, collisionY);
-
-
-
     }
 
     @Override

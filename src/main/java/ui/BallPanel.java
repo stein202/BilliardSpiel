@@ -1,5 +1,7 @@
 package main.java.ui;
 
+import main.java.Brain;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedList;
@@ -10,6 +12,7 @@ public class BallPanel extends JPanel {
     public final BilliardTable billiardTable;
 
     private java.util.Queue<BilliardBall> ballsToRemove = new LinkedList<>();
+    private boolean previousAllStill = true;
 
     Timer physicsTimer = new Timer(8, e -> updateAllBalls());
 
@@ -31,6 +34,14 @@ public class BallPanel extends JPanel {
     }
 
     public void updateAllBalls() {
+        boolean allStill = balls.stream().allMatch(BilliardBall::isBallStill);
+
+        if (!previousAllStill && allStill) {
+            Brain.switchTurn();
+        }
+
+        previousAllStill = allStill;
+
         for (BilliardBall ball : balls) {
             ball.updatePosition();
         }
