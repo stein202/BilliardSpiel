@@ -61,6 +61,22 @@ public class Overlay extends JPanel {
             throw new RuntimeException(e);
         }
 
+        String statusText;
+        if (Brain.gameState == main.java.misc.GameState.ENDED) {
+            statusText = "Spieler " + (Brain.getWinner() + 1) + " hat gewonnen!";
+        } else {
+            statusText = "Spieler " + (Brain.currentPlayer + 1) + " ist am Zug";
+        }
+
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
+        FontMetrics metrics = g2d.getFontMetrics();
+        int textWidth = metrics.stringWidth(statusText);
+        int centerX = GameFrame.width / 2 - textWidth / 2;
+        int centerY = GameFrame.height - BilliardTable.outerMargin - 250;
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawString(statusText, centerX, fieldY);
+
         int[] balls = isPlayer1 ? player1Balls : player2Balls;
         int ballRadius = 20;
         int startX = fieldX + 130;

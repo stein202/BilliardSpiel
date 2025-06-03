@@ -1,6 +1,7 @@
 package main.java.ui;
 
 import main.java.Brain;
+import main.java.misc.Turn;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,8 @@ public class BallPanel extends JPanel {
 
     private java.util.Queue<BilliardBall> ballsToRemove = new LinkedList<>();
     private boolean previousAllStill = true;
+
+    private boolean foulOccurred = false;
 
     Timer physicsTimer = new Timer(8, e -> updateAllBalls());
 
@@ -34,21 +37,45 @@ public class BallPanel extends JPanel {
     }
 
     public void updateAllBalls() {
-        boolean allStill = balls.stream().allMatch(BilliardBall::isBallStill);
-
-        if (!previousAllStill && allStill) {
-            Brain.switchTurn();
-        }
-
-        previousAllStill = allStill;
+        boolean allStillBeforeUpdate = balls.stream().allMatch(BilliardBall::isBallStill);
 
         for (BilliardBall ball : balls) {
             ball.updatePosition();
         }
 
+        boolean allStillAfterUpdate = balls.stream().allMatch(BilliardBall::isBallStill);
+
+        for (BilliardBall ball : ballsToRemove) {
+            int playerColor = Brain.playerColor[Brain.currentPlayer];
+
+            if (ball.id == 0 ||
+                    (playerColor == 0 && Brain.isBlue(ball.id)) ||
+                    (playerColor == 1 && Brain.isRed(ball.id))) {
+                foulOccurred = true;
+            }
+
+            if (playerColor == 0 && Brain.isBlue(ball.id)) {
+                foulOccurred = true;
+            } else if (playerColor == 1 && Brain.isRed(ball.id)) {
+                foulOccurred = true;
+            }
+        }
+
+        if (foulOccurred) {
+            Brain.switchTurn();
+            foulOccurred = false;
+        } else {
+            if (!allStillBeforeUpdate && allStillAfterUpdate && ballsToRemove.isEmpty()) {
+                Brain.switchTurn();
+            }
+        }
+
         for (BilliardBall ball : ballsToRemove) {
             billiardTable.balls.remove(ball);
         }
+
+        ballsToRemove.clear();
+        previousAllStill = allStillAfterUpdate;
 
         repaint();
     }
