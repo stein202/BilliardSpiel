@@ -10,8 +10,8 @@ import java.awt.event.MouseMotionListener;
 
 public class BilliardQueue extends JPanel implements MouseListener, MouseMotionListener {
     public Turn turn;
-    public int angle;
-    public int angle2;
+    public double angle;
+    public double angle2;
     public BilliardBall ball;
     public final int queueLength = 500;
     public final static double masse = 0.5;
@@ -23,7 +23,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
     private double cachedCos = 0;
     private double cachedSin = 0;
-    private int cachedAngle = -1;
+    private double cachedAngle = -1;
     double newcachedCos = 0;
     double newcachedSin = 0;
     int cachedPullBack;
@@ -141,8 +141,8 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
 
             double length = Math.hypot(vecX, vecY);
             if (length != 0) {
-                vecX /= length *-1;
-                vecY /= length *-1;
+                vecX /= length * -1;
+                vecY /= length * -1;
             }
 
             int directionLineLength = 150;
@@ -155,14 +155,9 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         }
 
 
-
-
-
-
         g2d.setColor(new Color(245, 245, 245));
         g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2d.drawLine(linex, liney, collisionX, collisionY);
-
 
 
     }
@@ -199,7 +194,11 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
                 chargeTimer.stop();
                 chargeTimer = null;
             }
-            cachedPullBack = pullBackDistance;
+            if (pullBackDistance > 80) {
+                cachedPullBack = 80;
+            } else {
+                cachedPullBack = pullBackDistance;
+            }
             pullBackDistance = 0;
             repaint();
 
@@ -229,14 +228,14 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         lastMouseX = currentX;
         lastMouseY = currentY;
 
-        int ballCenterX = (int) ball.x + (BilliardBall.radius >> 1);
-        int ballCenterY = (int) ball.y + (BilliardBall.radius >> 1);
+        int ballCenterX = (int) ball.x + (BilliardBall.radius / 2);
+        int ballCenterY = (int) ball.y + (BilliardBall.radius /2);
 
         int deltaX = currentX - ballCenterX;
         int deltaY = currentY - ballCenterY;
 
-        int newAngle = (int) Math.toDegrees(Math.atan2(deltaY, deltaX));
-        int newAngle2 = (int) (Math.toDegrees(Math.atan2(deltaY, deltaX)) * -1);
+        double newAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+        double newAngle2 = (Math.toDegrees(Math.atan2(deltaY, deltaX)) * -1);
         if (newAngle < 0) newAngle += 360;
 
         angle = newAngle;
@@ -251,7 +250,7 @@ public class BilliardQueue extends JPanel implements MouseListener, MouseMotionL
         double newradians = Math.toRadians(angle2);
         newcachedCos = Math.cos(newradians);
         newcachedSin = Math.sin(newradians);
-        int newcachedAngle = angle2;
+        double newcachedAngle = angle2;
 
 
         repaint();

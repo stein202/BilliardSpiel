@@ -1,9 +1,10 @@
 package main.java.ui;
 
-import javax.swing.*;
+import main.java.Brain;
+import main.java.misc.Turn;
+
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.ArrayList;
 
 public class BilliardBall {
     public static final int radius = 30;
@@ -84,6 +85,8 @@ public class BilliardBall {
                 y = orgY;
             } else {
                 ballPanel.removeBall(this);
+                Brain.registerPottedBall(this);
+                billiardTable.overlay.updatePottedBalls(this);
             }
             return;
         }

@@ -1,5 +1,8 @@
 package main.java.ui;
 
+import main.java.Brain;
+import main.java.misc.GameState;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -116,6 +119,7 @@ public class StartScreen extends JPanel implements ActionListener{
             fenster.add(new BilliardTable(fenster));
             fenster.revalidate();
             fenster.repaint();
+            Brain.gameState = GameState.AWAITING_SHOT;
         } else if (e.getSource() == beendenButton) {
             fenster.dispose();
         }
