@@ -164,13 +164,13 @@ public class BilliardBall {
         }
     }
 
-    private void resolveBallCollision(BilliardBall other) {
+    private void resolveBallCollision(BilliardBall ball) {
 
         // Berechne die Zentren der beiden Bälle
         double thisX = this.x + radius / 2.0;
         double thisY = this.y + radius / 2.0;
-        double otherX = other.x + radius / 2.0;
-        double otherY = other.y + radius / 2.0;
+        double otherX = ball.x + radius / 2.0;
+        double otherY = ball.y + radius / 2.0;
 
         // Berechne den Kollisionsvektor (von diesem Ball zum anderen)
         double dx = otherX - thisX;
@@ -188,8 +188,8 @@ public class BilliardBall {
         double ny = dy / distance;
 
         // Berechne die relativen Geschwindigkeiten
-        double relativeVx = this.vx - other.vx;
-        double relativeVy = this.vy - other.vy;
+        double relativeVx = this.vx - ball.vx;
+        double relativeVy = this.vy - ball.vy;
 
         // Berechne die relative Geschwindigkeit in Richtung der Kollisionsnormale
         double relativeSpeed = relativeVx * nx + relativeVy * ny;
@@ -203,8 +203,8 @@ public class BilliardBall {
         // Aktualisiere die Geschwindigkeiten beider Bälle
         this.vx -= impulse * nx;
         this.vy -= impulse * ny;
-        other.vx += impulse * nx;
-        other.vy += impulse * ny;
+        ball.vx += impulse * nx;
+        ball.vy += impulse * ny;
 
 
         double overlap = radius - distance;
@@ -213,8 +213,8 @@ public class BilliardBall {
 
             this.x -= separationDistance * nx;
             this.y -= separationDistance * ny;
-            other.x += separationDistance * nx;
-            other.y += separationDistance * ny;
+            ball.x += separationDistance * nx;
+            ball.y += separationDistance * ny;
         }
     }
 
